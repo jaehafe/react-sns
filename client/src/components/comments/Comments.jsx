@@ -1,16 +1,16 @@
-import { useContext, useState } from "react";
-import "./comments.scss";
-import { AuthContext } from "../../context/authContext";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
-import moment from "moment";
+import { useContext, useState } from 'react';
+import './comments.scss';
+import { AuthContext } from '../../context/authContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { makeRequest } from '../../axios';
+import moment from 'moment';
 
 const Comments = ({ postId }) => {
-  const [desc, setDesc] = useState("");
+  const [desc, setDesc] = useState('');
   const { currentUser } = useContext(AuthContext);
 
-  const { isLoading, error, data } = useQuery(["comments"], () =>
-    makeRequest.get("/comments?postId=" + postId).then((res) => {
+  const { isLoading, error, data } = useQuery(['comments'], () =>
+    makeRequest.get('/comments?postId=' + postId).then((res) => {
       return res.data;
     })
   );
@@ -19,12 +19,12 @@ const Comments = ({ postId }) => {
 
   const mutation = useMutation(
     (newComment) => {
-      return makeRequest.post("/comments", newComment);
+      return makeRequest.post('/comments', newComment);
     },
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(["comments"]);
+        queryClient.invalidateQueries(['comments']);
       },
     }
   );
@@ -32,13 +32,13 @@ const Comments = ({ postId }) => {
   const handleClick = async (e) => {
     e.preventDefault();
     mutation.mutate({ desc, postId });
-    setDesc("");
+    setDesc('');
   };
 
   return (
     <div className="comments">
       <div className="write">
-        <img src={"/upload/" + currentUser.profilePic} alt="" />
+        <img src={'/upload/' + currentUser.profilePic} alt="" />
         <input
           type="text"
           placeholder="write a comment"
@@ -48,12 +48,12 @@ const Comments = ({ postId }) => {
         <button onClick={handleClick}>Send</button>
       </div>
       {error
-        ? "Something went wrong"
+        ? 'Something went wrong'
         : isLoading
-        ? "loading"
+        ? 'loading'
         : data.map((comment) => (
             <div className="comment">
-              <img src={"/upload/" + comment.profilePic} alt="" />
+              <img src={'/upload/' + comment.profilePic} alt="" />
               <div className="info">
                 <span>{comment.name}</span>
                 <p>{comment.desc}</p>
